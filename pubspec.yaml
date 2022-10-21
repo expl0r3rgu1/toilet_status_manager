@@ -1,5 +1,5 @@
 name: toilet_status_manager
-description: A new Flutter project.
+description: The main purpose of this app is to be used in houses with multiple inmates to check and update the status of the toilet. Free/Busy
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
