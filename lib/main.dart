@@ -1,12 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:json_theme/json_theme.dart';
 import 'package:flutter/services.dart';
-import 'dart:convert';
 import 'package:toilet_status_manager/home_page.dart';
+import 'dart:convert';
+import 'package:toilet_status_manager/login_page.dart';
 import 'package:toilet_status_manager/resources/text_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   final lightThemeStr =
       await rootBundle.loadString('assets/themes/light_theme.json');
@@ -34,7 +38,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const HomePage(),
+      home: (FirebaseAuth.instance.currentUser != null)
+          ? HomePage(
+              FirebaseAuth.instance.currentUser!,
+              key: key,
+            )
+          : LoginPage(key: key),
       themeMode: ThemeMode.system,
       theme: lightTheme,
       darkTheme: darkTheme,
