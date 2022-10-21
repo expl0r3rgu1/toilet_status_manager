@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.toilet_status_manager">
+    package="com.expl0r3rgu1.toiletstatusmanager">
    <application
         android:label="toilet_status_manager"
         android:name="${applicationName}"
