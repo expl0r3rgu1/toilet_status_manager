@@ -59,9 +59,12 @@ class _CreateToiletPageState extends State<CreateToiletPage> {
                                     builder: (context) =>
                                         HomePage(widget.user))));
                       },
-                      child: Text(
-                        "Create",
-                        style: Theme.of(context).textTheme.headline5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          "Create",
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
                       )),
                 ],
               ),
