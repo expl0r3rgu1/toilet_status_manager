@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:toilet_status_manager/firebase/firestore_services.dart';
+import 'package:toilet_status_manager/home_page.dart';
 
 class CreateToiletPage extends StatefulWidget {
   final User user;
@@ -52,9 +53,11 @@ class _CreateToiletPageState extends State<CreateToiletPage> {
                         await firestoreServices
                             .createToilet(widget.user.uid,
                                 _toiletNameController.text.trim())
-                            .then((value) => Navigator.pop(context, () {
-                                  setState(() {});
-                                }));
+                            .then((value) => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        HomePage(widget.user))));
                       },
                       child: Text(
                         "Create",
