@@ -42,22 +42,46 @@ class FirestoreServices {
 
   Future<void> createToilet(String uid, String nickname) async {
     final DocumentReference documentReference =
-        await _toiletsCollectionReference
-            .add({'nickname': nickname, 'status': false});
+        await _toiletsCollectionReference.add({
+      'nickname': nickname,
+      'last_user_inside': '',
+      'members': [uid]
+    });
     await _usersCollectionReference.doc(uid).update({
       'toilet_id': documentReference.id,
     });
   }
 
-  Stream<bool> getToiletStatus(String uid) async* {
-    final String toiletId = await getToiletId(uid);
-    yield* _toiletsCollectionReference
-        .doc(toiletId)
-        .snapshots()
-        .map((event) => (event.data() as Map<String, dynamic>)['status']);
+  Stream<String> getLastUserInside(String toiletId) async* {
+    yield* _toiletsCollectionReference.doc(toiletId).snapshots().map(
+        (event) => (event.data() as Map<String, dynamic>)['last_user_inside']);
   }
 
-  Future<void> bookToilet(String toiletId) async {
-    await _toiletsCollectionReference.doc(toiletId).update({'status': true});
+  Future<void> bookToilet(String toiletId, String uid) async {
+    await _toiletsCollectionReference
+        .doc(toiletId)
+        .update({'last_user_inside': uid});
+  }
+
+  Future<void> releaseToilet(String toiletId) async {
+    await _toiletsCollectionReference
+        .doc(toiletId)
+        .update({'last_user_inside': ''});
+  }
+
+  Future<void> leaveToilet(String uid, String toiletId) async {
+    await _usersCollectionReference.doc(uid).update({'toilet_id': ''});
+    //check if last member
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await _toiletsCollectionReference.doc(toiletId).get()
+            as DocumentSnapshot<Map<String, dynamic>>;
+    final List<dynamic> members = documentSnapshot.data()!['members'];
+    if (members.length == 1) {
+      await _toiletsCollectionReference.doc(toiletId).delete();
+    } else {
+      await _toiletsCollectionReference.doc(toiletId).update({
+        'members': FieldValue.arrayRemove([uid]),
+      });
+    }
   }
 }
