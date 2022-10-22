@@ -91,4 +91,8 @@ class FirestoreServices {
       'members': FieldValue.arrayUnion([uid]),
     });
   }
+
+  Future<void> deleteUser(String uid) async {
+    await _usersCollectionReference.doc(uid).delete();
+  }
 }
