@@ -1,8 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:toilet_status_manager/firebase/firebase_authentication_services.dart';
 import 'package:toilet_status_manager/firebase/firestore_services.dart';
+import 'package:toilet_status_manager/login_page.dart';
 import 'package:toilet_status_manager/model/toilet.dart';
 import 'package:toilet_status_manager/pages/create_toilet_page.dart';
 import 'package:toilet_status_manager/pages/join_toilet_page.dart';
@@ -279,42 +282,99 @@ class _HomePageState extends State<HomePage> {
               );
             } else {
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      CreateToiletPage(widget.user)));
-                        },
-                        child: Text(
-                          "Create Toilet",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline3!
-                              .copyWith(color: Colors.white),
-                        )),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.03,
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                          onPressed: () async {
+                            try {
+                              await _firestoreServices
+                                  .deleteUser(widget.user.uid)
+                                  .then((value) async {
+                                await FirebaseAuthenticationServices
+                                        .deleteUser()
+                                    .then((value) {
+                                  Fluttertoast.showToast(
+                                      msg: "Account Deleted",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginPage(
+                                          key: widget.key,
+                                        ),
+                                      ));
+                                });
+                              });
+                            } on Exception catch (e) {
+                              Fluttertoast.showToast(
+                                  msg: "Login Again to Delete Account",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                              await FirebaseAuthenticationServices.auth
+                                  .signOut()
+                                  .then((value) => Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginPage(
+                                          key: widget.key,
+                                        ),
+                                      )));
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.logout_rounded,
+                          )),
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      JoinToiletPage(widget.user)));
-                        },
-                        child: Text(
-                          "Join Toilet",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline3!
-                              .copyWith(color: Colors.white),
-                        )),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CreateToiletPage(widget.user)));
+                            },
+                            child: Text(
+                              "Create Toilet",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline3!
+                                  .copyWith(color: Colors.white),
+                            )),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.03,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          JoinToiletPage(widget.user)));
+                            },
+                            child: Text(
+                              "Join Toilet",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline3!
+                                  .copyWith(color: Colors.white),
+                            )),
+                      ],
+                    ),
                   ],
                 ),
               );
