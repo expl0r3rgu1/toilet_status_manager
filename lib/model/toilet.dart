@@ -1,6 +1,6 @@
 class Toilet {
-  String uid;
+  String id;
   String nickname;
 
-  Toilet({required this.uid, required this.nickname});
+  Toilet({required this.id, required this.nickname});
 }
