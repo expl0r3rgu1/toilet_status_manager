@@ -48,4 +48,12 @@ class FirestoreServices {
       'toilet_id': documentReference.id,
     });
   }
+
+  Stream<bool> getToiletStatus(String uid) async* {
+    final String toiletId = await getToiletId(uid);
+    yield* _toiletsCollectionReference
+        .doc(toiletId)
+        .snapshots()
+        .map((event) => (event.data() as Map<String, dynamic>)['status']);
+  }
 }
