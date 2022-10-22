@@ -1,9 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:toilet_status_manager/firebase/firestore_services.dart';
 import 'package:toilet_status_manager/model/toilet.dart';
 import 'package:toilet_status_manager/pages/create_toilet_page.dart';
+import 'package:toilet_status_manager/pages/join_toilet_page.dart';
 
 class HomePage extends StatefulWidget {
   final User user;
@@ -28,41 +30,108 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: GestureDetector(
-                        onTap: () async {
-                          await _firestoreServices
-                              .leaveToilet(
-                                  widget.user.uid, toiletSnapshot.data!.id)
-                              .then((value) => Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomePage(widget.user),
-                                  )));
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColorLight,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.exit_to_app_rounded,
-                                size: MediaQuery.of(context).size.width * 0.05,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.02,
-                              ),
-                              Text("Leave Toilet",
-                                  style: Theme.of(context).textTheme.headline6),
-                            ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            await _firestoreServices
+                                .leaveToilet(
+                                    widget.user.uid, toiletSnapshot.data!.id)
+                                .then((value) => Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          HomePage(widget.user),
+                                    )));
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).focusColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(
+                                  Icons.exit_to_app_rounded,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.02,
+                                ),
+                                Text("Leave Toilet",
+                                    style:
+                                        Theme.of(context).textTheme.headline6),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).focusColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: IconButton(
+                              iconSize: MediaQuery.of(context).size.width * 0.1,
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    actionsPadding: const EdgeInsets.all(20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    title: const Text(
+                                      "Tap Join Toilet and scan this QR code",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    titleTextStyle:
+                                        Theme.of(context).textTheme.headline5,
+                                    contentPadding: const EdgeInsets.only(
+                                        top: 15, left: 15, right: 15),
+                                    content: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.8,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.8,
+                                      child: QrImage(
+                                        data: toiletSnapshot.data!.id,
+                                        version: QrVersions.auto,
+                                        foregroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("Close",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary)),
+                                      ),
+                                    ],
+                                    actionsAlignment: MainAxisAlignment.center,
+                                  ),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.qr_code_rounded,
+                              )),
+                        )
+                      ],
                     ),
                     AutoSizeText(
                       toiletSnapshot.data!.nickname,
@@ -225,19 +294,25 @@ class _HomePageState extends State<HomePage> {
                           "Create Toilet",
                           style: Theme.of(context)
                               .textTheme
-                              .headline2!
+                              .headline3!
                               .copyWith(color: Colors.white),
                         )),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      JoinToiletPage(widget.user)));
+                        },
                         child: Text(
                           "Join Toilet",
                           style: Theme.of(context)
                               .textTheme
-                              .headline2!
+                              .headline3!
                               .copyWith(color: Colors.white),
                         )),
                   ],
