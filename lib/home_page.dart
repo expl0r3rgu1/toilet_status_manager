@@ -313,7 +313,7 @@ class _HomePageState extends State<HomePage> {
                                       ));
                                 });
                               });
-                            } on Exception catch (e) {
+                            } on Exception {
                               Fluttertoast.showToast(
                                   msg: "Login Again to Delete Account",
                                   toastLength: Toast.LENGTH_SHORT,
