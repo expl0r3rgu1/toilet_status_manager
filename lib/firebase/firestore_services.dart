@@ -84,4 +84,11 @@ class FirestoreServices {
       });
     }
   }
+
+  Future<void> joinToilet(String uid, String toiletId) async {
+    await _usersCollectionReference.doc(uid).update({'toilet_id': toiletId});
+    await _toiletsCollectionReference.doc(toiletId).update({
+      'members': FieldValue.arrayUnion([uid]),
+    });
+  }
 }
