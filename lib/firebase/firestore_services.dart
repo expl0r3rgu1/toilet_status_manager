@@ -23,7 +23,7 @@ class FirestoreServices {
           await _toiletsCollectionReference.doc(toiletId).get()
               as DocumentSnapshot<Map<String, dynamic>>;
       return Toilet(
-        uid: documentSnapshot.id,
+        id: documentSnapshot.id,
         nickname: documentSnapshot.data()!['nickname'],
       );
     });
@@ -55,5 +55,9 @@ class FirestoreServices {
         .doc(toiletId)
         .snapshots()
         .map((event) => (event.data() as Map<String, dynamic>)['status']);
+  }
+
+  Future<void> bookToilet(String toiletId) async {
+    await _toiletsCollectionReference.doc(toiletId).update({'status': true});
   }
 }
