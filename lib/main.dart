@@ -20,8 +20,7 @@ void main() async {
   final darkThemeStr =
       await rootBundle.loadString('assets/themes/dark_theme.json');
   final darkThemeJson = jsonDecode(darkThemeStr);
-  final darkTheme = ThemeDecoder.decodeThemeData(darkThemeJson)!
-      .copyWith(textTheme: textTheme);
+  final darkTheme = ThemeDecoder.decodeThemeData(darkThemeJson)!;
 
   runApp(App(
       lightTheme: lightTheme.copyWith(textTheme: textTheme),
