@@ -42,6 +42,7 @@ dependencies:
   firebase_auth: ^4.0.2
   fluttertoast: ^8.1.1
   country_picker: ^2.0.16
+  cloud_firestore: ^4.0.2
 
 dev_dependencies:
   flutter_test:
