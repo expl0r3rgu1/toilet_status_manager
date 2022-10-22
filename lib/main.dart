@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:toilet_status_manager/home_page.dart';
 import 'dart:convert';
 import 'package:toilet_status_manager/login_page.dart';
-import 'package:toilet_status_manager/resources/text_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,9 +21,7 @@ void main() async {
   final darkThemeJson = jsonDecode(darkThemeStr);
   final darkTheme = ThemeDecoder.decodeThemeData(darkThemeJson)!;
 
-  runApp(App(
-      lightTheme: lightTheme.copyWith(textTheme: textTheme),
-      darkTheme: darkTheme.copyWith(textTheme: textTheme)));
+  runApp(App(lightTheme: lightTheme, darkTheme: darkTheme));
 }
 
 class App extends StatelessWidget {
