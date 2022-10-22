@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:toilet_status_manager/firebase/firestore_services.dart';
+import 'package:toilet_status_manager/home_page.dart';
 
 class JoinToiletPage extends StatefulWidget {
   final User user;
@@ -21,14 +22,21 @@ class _JoinToiletPageState extends State<JoinToiletPage> {
         children: [
           MobileScanner(
               allowDuplicates: false,
-              onDetect: (barcode, args) {
+              onDetect: (barcode, args) async {
                 if (barcode.rawValue == null) {
                   debugPrint('Failed to scan Barcode');
                 } else {
                   final String code = barcode.rawValue!;
                   debugPrint('Barcode found! $code');
                   FirestoreServices firestoreServices = FirestoreServices();
-                  firestoreServices.joinToilet(widget.user.uid, code);
+                  await firestoreServices
+                      .joinToilet(widget.user.uid, code)
+                      .then((value) => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePage(
+                                    widget.user,
+                                  ))));
                 }
               }),
           Center(
