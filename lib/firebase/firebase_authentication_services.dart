@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:toilet_status_manager/firebase/firestore_services.dart';
 import 'package:toilet_status_manager/home_page.dart';
 
 class FirebaseAuthenticationServices {
@@ -32,11 +33,20 @@ class FirebaseAuthenticationServices {
 
       await FirebaseAuthenticationServices.auth
           .signInWithCredential(phoneAuthCredential)
-          .then((UserCredential userCredential) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(userCredential.user!)));
+          .then((UserCredential userCredential) async {
+        FirestoreServices firestoreServices = FirestoreServices();
+        await firestoreServices
+            .checkIfUserExists(userCredential.user!.uid)
+            .then((value) {
+          if (!value) {
+            firestoreServices.createUser(userCredential.user!.uid);
+          }
+
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomePage(userCredential.user!)));
+        });
       });
     } catch (e) {
       return false;
