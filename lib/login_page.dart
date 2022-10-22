@@ -227,9 +227,11 @@ class _LoginPageState extends State<LoginPage> {
           this.forceResendingToken = forceResendingToken;
         },
         codeAutoRetrievalTimeout: (String verificationId) {
-          setState(() {
-            codeSent = false;
-          });
+          if (mounted) {
+            setState(() {
+              codeSent = false;
+            });
+          }
           Fluttertoast.showToast(
               msg: "Timeout",
               toastLength: Toast.LENGTH_SHORT,
