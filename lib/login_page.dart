@@ -155,25 +155,15 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.03,
                           ),
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              fixedSize: MaterialStateProperty.all(
-                                Size(
-                                  MediaQuery.of(context).size.width * 0.28,
-                                  MediaQuery.of(context).size.height * 0.05,
-                                ),
-                              ),
-                            ),
+                          IconButton(
+                            iconSize: MediaQuery.of(context).size.width * 0.1,
+                            icon: const Icon(Icons.send_rounded),
                             onPressed: () async {
                               await registerUser(
                                   _phoneNumberController.text
                                       .replaceAll(" ", ""),
                                   context);
                             },
-                            child: Text(
-                              "Send code",
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
                           ),
                         ],
                       )
