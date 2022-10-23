@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:toilet_status_manager/model/toilet.dart';
 
 class FirestoreServices {
@@ -6,6 +7,7 @@ class FirestoreServices {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _toiletsCollectionReference =
       FirebaseFirestore.instance.collection('toilets');
+  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
 
   Future<String> getToiletId(String uid) async {
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
@@ -89,6 +91,10 @@ class FirestoreServices {
     await _usersCollectionReference.doc(uid).update({'toilet_id': toiletId});
     await _toiletsCollectionReference.doc(toiletId).update({
       'members': FieldValue.arrayUnion([uid]),
+    });
+    await _analytics.logEvent(name: 'join_toilet', parameters: {
+      'uid': uid,
+      'toilet_id': toiletId,
     });
   }
 
