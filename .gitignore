@@ -45,3 +45,6 @@ app.*.map.json
 
 # Upload keystore
 upload-keystore.jks
+
+# Firebase
+/android/app/google-services.json
