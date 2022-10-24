@@ -53,11 +53,17 @@ class _CreateToiletPageState extends State<CreateToiletPage> {
                         await firestoreServices
                             .createToilet(widget.user.uid,
                                 _toiletNameController.text.trim())
-                            .then((value) => Navigator.pushReplacement(
+                            .then((value) => Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        HomePage(widget.user))));
+                                        HomePage(widget.user)),
+                                (route) =>
+                                    route ==
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          HomePage(widget.user),
+                                    )));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
