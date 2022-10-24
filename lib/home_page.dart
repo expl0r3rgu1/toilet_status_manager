@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
                           },
                           child: Container(
                             padding: const EdgeInsets.all(10),
-                            width: MediaQuery.of(context).size.width * 0.45,
+                            width: MediaQuery.of(context).size.width * 0.40,
                             decoration: BoxDecoration(
                               color: Theme.of(context).focusColor,
                               borderRadius: BorderRadius.circular(10),
@@ -62,10 +62,6 @@ class _HomePageState extends State<HomePage> {
                                   Icons.exit_to_app_rounded,
                                   size:
                                       MediaQuery.of(context).size.width * 0.05,
-                                ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.02,
                                 ),
                                 Text("Leave Toilet",
                                     style:
@@ -137,6 +133,8 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     AutoSizeText(
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
                       toiletSnapshot.data!.nickname,
                       style: Theme.of(context).textTheme.headline1,
                     ),
