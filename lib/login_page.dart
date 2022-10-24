@@ -48,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                           Expanded(
                             child: TextField(
                               controller: _smsCodeController,
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 hintText: "SMS Code",
                                 hintStyle:
@@ -142,6 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                           Expanded(
                             child: TextField(
                               controller: _phoneNumberController,
+                              keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
                                 hintText: "Phone Number",
                                 hintStyle:
