@@ -28,7 +28,12 @@ class _HomePageState extends State<HomePage> {
       child: FutureBuilder<Toilet?>(
           future: _firestoreServices.getToilet(widget.user.uid),
           builder: (context, toiletSnapshot) {
-            if (toiletSnapshot.hasData && toiletSnapshot.data != null) {
+            if (toiletSnapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (toiletSnapshot.connectionState == ConnectionState.done &&
+                toiletSnapshot.hasData) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
