@@ -28,7 +28,12 @@ class _HomePageState extends State<HomePage> {
       child: FutureBuilder<Toilet?>(
           future: _firestoreServices.getToilet(widget.user.uid),
           builder: (context, toiletSnapshot) {
-            if (toiletSnapshot.hasData && toiletSnapshot.data != null) {
+            if (toiletSnapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (toiletSnapshot.connectionState == ConnectionState.done &&
+                toiletSnapshot.hasData) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -287,49 +292,96 @@ class _HomePageState extends State<HomePage> {
                       alignment: Alignment.topRight,
                       child: IconButton(
                           onPressed: () async {
-                            try {
-                              await _firestoreServices
-                                  .deleteUser(widget.user.uid)
-                                  .then((value) async {
-                                await FirebaseAuthenticationServices
-                                        .deleteUser()
-                                    .then((value) {
-                                  Fluttertoast.showToast(
-                                      msg: "Account Deleted",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0);
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginPage(
-                                          key: widget.key,
-                                        ),
-                                      ));
-                                });
-                              });
-                            } on Exception {
-                              Fluttertoast.showToast(
-                                  msg: "Login Again to Delete Account",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
-                              await FirebaseAuthenticationServices.auth
-                                  .signOut()
-                                  .then((value) => Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginPage(
-                                          key: widget.key,
-                                        ),
-                                      )));
-                            }
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Would you like to..."),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Cancel")),
+                                  TextButton(
+                                    onPressed: () async {
+                                      try {
+                                        await _firestoreServices
+                                            .deleteUser(widget.user.uid)
+                                            .then((value) async {
+                                          await FirebaseAuthenticationServices
+                                                  .deleteUser()
+                                              .then((value) {
+                                            Fluttertoast.showToast(
+                                                msg: "Account Deleted",
+                                                toastLength: Toast.LENGTH_SHORT,
+                                                gravity: ToastGravity.BOTTOM,
+                                                timeInSecForIosWeb: 1,
+                                                backgroundColor: Colors.red,
+                                                textColor: Colors.white,
+                                                fontSize: 16.0);
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LoginPage(
+                                                    key: widget.key,
+                                                  ),
+                                                ));
+                                          });
+                                        });
+                                      } on Exception {
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "Login Again to Delete Account",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            timeInSecForIosWeb: 1,
+                                            backgroundColor: Colors.red,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0);
+                                        await FirebaseAuthenticationServices
+                                            .auth
+                                            .signOut()
+                                            .then((value) =>
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          LoginPage(
+                                                        key: widget.key,
+                                                      ),
+                                                    )));
+                                      }
+                                    },
+                                    child: Text(
+                                      "Delete account",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .button!
+                                          .copyWith(color: Colors.red),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      await FirebaseAuthenticationServices.auth
+                                          .signOut()
+                                          .then((value) =>
+                                              Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        LoginPage(
+                                                      key: widget.key,
+                                                    ),
+                                                  )));
+                                    },
+                                    child: Text(
+                                      "Logout",
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
                           },
                           icon: const Icon(
                             Icons.logout_rounded,
