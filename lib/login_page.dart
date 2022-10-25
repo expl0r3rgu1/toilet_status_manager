@@ -192,9 +192,12 @@ class _LoginPageState extends State<LoginPage> {
                                       validator: (value) {
                                         RegExp regex =
                                             RegExp(r"^\+[1-9]{1}[0-9]{3,14}$");
-                                        if (value!.isEmpty) {
+                                        if (value!
+                                            .replaceAll(" ", "")
+                                            .isEmpty) {
                                           return "Please enter your phone number";
-                                        } else if (!regex.hasMatch(value)) {
+                                        } else if (!regex.hasMatch(
+                                            value.replaceAll(" ", ""))) {
                                           return "Please enter a valid phone number";
                                         } else {
                                           return null;
@@ -275,16 +278,22 @@ class _LoginPageState extends State<LoginPage> {
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 1,
                   fontSize: 16.0);
+              setState(() {
+                loading = false;
+              });
             }
           });
         },
         verificationFailed: (FirebaseAuthException authException) {
           Fluttertoast.showToast(
-              msg: authException.message!,
+              msg: "Login failed",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 16.0);
+          setState(() {
+            loading = false;
+          });
         },
         codeSent: (String verificationId, int? forceResendingToken) async {
           setState(() {
