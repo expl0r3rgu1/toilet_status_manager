@@ -84,4 +84,5 @@ dependencies {
     implementation("androidx.multidex:multidex:2.0.1")
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.android.gms:play-services-ads:21.3.0'
 }
