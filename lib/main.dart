@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:json_theme/json_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:toilet_status_manager/home_page.dart';
@@ -17,6 +18,8 @@ void main() async {
 
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   await analytics.logAppOpen();
+
+  MobileAds.instance.initialize();
 
   final lightThemeStr =
       await rootBundle.loadString('assets/themes/light_theme.json');
