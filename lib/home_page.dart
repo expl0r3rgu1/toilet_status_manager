@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:toilet_status_manager/firebase/firebase_admob_services.dart';
 import 'package:toilet_status_manager/firebase/firebase_authentication_services.dart';
 import 'package:toilet_status_manager/firebase/firestore_services.dart';
 import 'package:toilet_status_manager/login_page.dart';
@@ -20,6 +24,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final FirestoreServices _firestoreServices = FirestoreServices();
+  late BannerAd _bannerAd;
+  @override
+  void initState() {
+    super.initState();
+
+    _bannerAd = FirebaseAdmobServices.createBannerAd();
+    _bannerAd.load();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -423,6 +436,7 @@ class _HomePageState extends State<HomePage> {
                                   .headline3!
                                   .copyWith(color: Colors.white),
                             )),
+                        AdWidget(ad: _bannerAd),
                       ],
                     ),
                   ],
